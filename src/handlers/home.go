@@ -1,22 +1,14 @@
 package handlers
 
 import (
-	"encoding/json"
-	"net/http"
-
+	"github.com/go/mini_market/src/model"
 	"github.com/go/mini_market/src/server"
+	"github.com/labstack/echo/v4"
 )
 
-type HomeResponse struct {
-	Message string `json:"message"`
-	Status  bool   `json:"status"`
-}
-
-func HomeHandler(s server.Server) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(HomeResponse{
+func HomeHandler(s server.Server) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.JSON(200, model.HomeResponse{
 			Message: "Welcome to server in go",
 			Status:  true,
 		})

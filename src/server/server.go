@@ -4,12 +4,11 @@ import (
 	"context"
 	"errors"
 	"log"
-	"net/http"
 
 	"github.com/go/mini_market/src/database"
 	"github.com/go/mini_market/src/repository"
-	"github.com/gorilla/mux"
-	"github.com/rs/cors"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Config struct {
@@ -23,7 +22,7 @@ type Server interface {
 
 type Broker struct {
 	config *Config
-	router *mux.Router
+	router *echo.Router
 }
 
 func (b *Broker) Config() *Config {
@@ -40,17 +39,18 @@ func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 
 	broker := &Broker{
 		config: config,
-		router: mux.NewRouter(),
+		router: echo.New().Router(),
 	}
 
 	return broker, nil
 }
 
-func (b *Broker) Start(binder func(s Server, r *mux.Router)) {
-	b.router = mux.NewRouter()
+func (b *Broker) Start(binder func(s Server, r *echo.Router)) {
+	e := echo.New()
+	b.router = e.Router()
 	binder(b, b.router)
 
-	handler := cors.Default().Handler(b.router)
+	e.Use(middleware.CORS())
 	repo, err := database.DBConnection(b.config.DatabaseUrl)
 	if err != nil {
 		log.Fatal(err)
@@ -59,7 +59,5 @@ func (b *Broker) Start(binder func(s Server, r *mux.Router)) {
 
 	log.Println("Starting server on port", b.Config().Port)
 
-	if err := http.ListenAndServe(b.config.Port, handler); err != nil {
-		log.Fatal("ListenAndServer: ", err)
-	}
+	e.Logger.Fatal(e.Start(b.config.Port))
 }
