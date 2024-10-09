@@ -2,11 +2,11 @@ package routers
 
 import (
 	"github.com/go/mini_market/src/server"
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
 )
 
-func BindRoutes(s server.Server, r *mux.Router) {
-	api := r.PathPrefix("/api/v1").Subrouter()
-	api.Use()
+func BindRoutes(s server.Server, r *echo.Router) {
 	HomeRouter(s, r)
+	UserRouter(s, r)
+	AuthenticateRouter(s, r)
 }

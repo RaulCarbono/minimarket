@@ -6,6 +6,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func HomeRouter(s server.Server, r *echo.Router) {
-	r.Add("GET", "/", handlers.HomeHandler(s))
+func AuthenticateRouter(s server.Server, r *echo.Router) {
+	r.Add("POST", "/auth/signup", handlers.SignUpHandler(s))
 }

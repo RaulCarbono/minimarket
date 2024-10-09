@@ -6,6 +6,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func HomeRouter(s server.Server, r *echo.Router) {
-	r.Add("GET", "/", handlers.HomeHandler(s))
+func UserRouter(s server.Server, r *echo.Router) {
+	r.Add("GET", "/user/info/:id", handlers.GetUserByIdHandler(s))
 }
