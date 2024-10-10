@@ -29,6 +29,15 @@ func (repo *MysqlRepositori) GetUserById(ctx echo.Context, id int) (*model.User,
 	return &user, nil
 }
 
+func (repo *MysqlRepositori) GetUserByEmail(ctx echo.Context, email string) (*model.User, error) {
+	var user model.User
+	err := repo.db.Table("users").Select("id", "email", "password", "role").Where("email = ?", email).Scan(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (repo *MysqlRepositori) InsertUser(ctx echo.Context, newUser *model.User) error {
 	result := repo.db.Create(&newUser)
 	return result.Error

@@ -15,6 +15,7 @@ func main() {
 	s, err := server.NewServer(context.Background(), &server.Config{
 		Port:        config.Port,
 		DatabaseUrl: config.DatabaseUrl,
+		JWTSecret:   config.JWTSecret,
 	})
 	if err != nil {
 		log.Fatal(err)
