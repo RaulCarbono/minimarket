@@ -22,6 +22,10 @@ type SignUpResponse struct {
 	Role  string `json:"role"`
 }
 
+type LoginResponse struct {
+	Token string `json:"token"`
+}
+
 type SignUpLoginRequest struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
