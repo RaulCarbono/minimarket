@@ -22,6 +22,7 @@ type SignUpResponse struct {
 	Role  string `json:"role"`
 }
 
+
 type LoginRequest struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
@@ -32,7 +33,8 @@ type SignUpRequest struct {
 	Name     string `json:"name" validate:"required"`
 	LastName string `json:"lastname" validate:"required"`
 	Phone    string `json:"phone" validate:"required"`
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
-	Role     string `json:"role" validate:"required"`
+  
+type LoginResponse struct {
+	Token string `json:"token"`
 }
+

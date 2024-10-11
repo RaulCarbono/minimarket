@@ -14,6 +14,7 @@ import (
 type Config struct {
 	Port        string
 	DatabaseUrl string
+	JWTSecret   string
 }
 
 type Server interface {
@@ -35,6 +36,10 @@ func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 	}
 	if config.DatabaseUrl == "" {
 		return nil, errors.New("DatabaseUrl is required")
+	}
+
+	if config.JWTSecret == "" {
+		return nil, errors.New("JWTSecret is required")
 	}
 
 	broker := &Broker{
