@@ -17,12 +17,21 @@ type UserByIdResponse struct {
 }
 
 type SignUpResponse struct {
-	Id    string `json:"id"`
+	Name  string `json:"name"`
 	Email string `json:"email"`
 	Role  string `json:"role"`
 }
 
-type SignUpLoginRequest struct {
+type LoginRequest struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
+	Role     string `json:"role" validate:"required"`
+}
+
+type SignUpRequest struct {
+	Name     string `json:"name" validate:"required"`
+	LastName string `json:"lastname" validate:"required"`
+	Phone    string `json:"phone" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 	Role     string `json:"role" validate:"required"`

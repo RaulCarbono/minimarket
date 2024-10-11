@@ -16,7 +16,7 @@ func DBConnection(DSN string) (*MysqlRepositori, error) {
 	if err != nil {
 		return nil, err
 	}
-	db.AutoMigrate(&model.User{}, &model.Product{}, &model.Order{}, &model.Customer{})
+	db.AutoMigrate(&model.Customer{}, &model.User{}, &model.Product{}, &model.Order{})
 	return &MysqlRepositori{db: db}, nil
 }
 
@@ -31,6 +31,11 @@ func (repo *MysqlRepositori) GetUserById(ctx echo.Context, id int) (*model.User,
 
 func (repo *MysqlRepositori) InsertUser(ctx echo.Context, newUser *model.User) error {
 	result := repo.db.Create(&newUser)
+	return result.Error
+}
+
+func (repo *MysqlRepositori) InsertCustomer(ctx echo.Context, newCustomer *model.Customer) error {
+	result := repo.db.Create(&newCustomer)
 	return result.Error
 }
 

@@ -7,5 +7,5 @@ type Customer struct {
 	Name     string `gorm:"type:varchar(255);not null"`
 	LastName string `gorm:"type:varchar(255);not null"`
 	Phone    string `gorm:"type:varchar(255);not null"`
-	UserId   int    `gorm:"not null"`
+	User     User   `gorm:"foreignKey:ID"`
 }

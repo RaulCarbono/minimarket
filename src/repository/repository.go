@@ -8,6 +8,7 @@ import (
 type Repository interface {
 	GetUserById(ctx echo.Context, id int) (*model.User, error)
 	InsertUser(ctx echo.Context, newUser *model.User) error
+	InsertCustomer(ctx echo.Context, newCustomer *model.Customer) error
 	Close() error
 }
 
@@ -23,6 +24,10 @@ func GetUserById(ctx echo.Context, id int) (*model.User, error) {
 
 func InsertUser(ctx echo.Context, newUser *model.User) error {
 	return implementation.InsertUser(ctx, newUser)
+}
+
+func InsertCustomer(ctx echo.Context, newCustomer *model.Customer) error {
+	return implementation.InsertCustomer(ctx, newCustomer)
 }
 
 func Close() error {

@@ -24,7 +24,7 @@ var (
 func SignUpHandler(s server.Server) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		var validate = validator.New()
-		var request = model.SignUpLoginRequest{}
+		var request = model.SignUpRequest{}
 		err := json.NewDecoder(ctx.Request().Body).Decode(&request)
 
 		if err != nil {
@@ -41,19 +41,24 @@ func SignUpHandler(s server.Server) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to hash password")
 		}
 
-		var newUser = model.User{
-			Email:    request.Email,
-			Password: string(hashedPassword),
-			Role:     request.Role,
+		var newCustomer = model.Customer{
+			Name:     request.Name,
+			LastName: request.LastName,
+			Phone:    request.Phone,
+			User: model.User{
+				Email:    request.Email,
+				Password: string(hashedPassword),
+				Role:     request.Role,
+			},
 		}
 
-		err = repository.InsertUser(ctx, &newUser)
+		err = repository.InsertCustomer(ctx, &newCustomer)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create user")
 		}
 		return ctx.JSON(http.StatusOK, model.SignUpResponse{
-			Email: newUser.Email,
-			Role:  newUser.Role,
+			Name:  newCustomer.Name,
+			Email: newCustomer.User.Email,
 		})
 	}
 }
