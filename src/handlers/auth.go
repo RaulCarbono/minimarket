@@ -69,7 +69,7 @@ func SignUpHandler(s server.Server) echo.HandlerFunc {
 func LoginHandler(s server.Server) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		var validate = validator.New()
-		var request = model.SignUpLoginRequest{}
+		var request = model.LoginRequest{}
 		err := json.NewDecoder(ctx.Request().Body).Decode(&request)
 
 		if err != nil {

@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func HomeRouter(s server.Server, r *echo.Router) {
-	r.Add("GET", "/", handlers.HomeHandler(s))
+func HomeRouter(s server.Server, e *echo.Echo) {
+	HomeGroup := e.Group("/home")
+	HomeGroup.GET("", handlers.HomeHandler(s))
 }

@@ -1,6 +1,8 @@
 package database
 
 import (
+	"fmt"
+
 	"github.com/go/mini_market/src/model"
 	"github.com/labstack/echo/v4"
 	"gorm.io/driver/mysql"
@@ -27,6 +29,25 @@ func (repo *MysqlRepositori) GetUserById(ctx echo.Context, id int) (*model.User,
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (repo *MysqlRepositori) GetUsers(ctx echo.Context) ([]*model.User, error) {
+	var user []*model.User
+	err := repo.db.Model(&model.User{}).Select("id", "email", "password", "role").Find(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (repo *MysqlRepositori) GetCustomerById(ctx echo.Context, id int) (*model.Customer, error) {
+	var customer model.Customer
+	fmt.Println(id)
+	err := repo.db.Preload("User").Select("*").Where("id = ?", id).First(&customer).Error
+	if err != nil {
+		return nil, err
+	}
+	return &customer, nil
 }
 
 func (repo *MysqlRepositori) GetUserByEmail(ctx echo.Context, email string) (*model.User, error) {

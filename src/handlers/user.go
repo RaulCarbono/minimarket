@@ -31,3 +31,25 @@ func GetUserByIdHandler(s server.Server) echo.HandlerFunc {
 		return ctx.JSON(http.StatusOK, userByIdResponse)
 	}
 }
+
+func GetUserHandler(s server.Server) echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		rows, err := repository.GetUsers(ctx)
+		if err != nil {
+			http.Error(ctx.Response().Writer, err.Error(), http.StatusBadRequest)
+			return err
+		}
+		var usersResponse []*model.UsersResponse
+
+		for _, user := range rows {
+			usersResponse = append(usersResponse, &model.UsersResponse{
+				Id:       user.ID,
+				Email:    user.Email,
+				Password: user.Password,
+				Role:     user.Role,
+			})
+
+		}
+		return ctx.JSON(http.StatusOK, usersResponse)
+	}
+}

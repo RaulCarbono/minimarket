@@ -3,12 +3,12 @@ package server
 import (
 	"context"
 	"errors"
-	"log"
 
 	"github.com/go/mini_market/src/database"
 	"github.com/go/mini_market/src/repository"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 )
 
 type Config struct {
@@ -50,19 +50,19 @@ func NewServer(ctx context.Context, config *Config) (*Broker, error) {
 	return broker, nil
 }
 
-func (b *Broker) Start(binder func(s Server, r *echo.Router)) {
+func (b *Broker) Start(binder func(s Server, e *echo.Echo)) {
 	e := echo.New()
-	b.router = e.Router()
-	binder(b, b.router)
+	binder(b, e)
 
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "metho=${method}, uri=${uri}, status=${status}\n",
+	}))
 	e.Use(middleware.CORS())
 	repo, err := database.DBConnection(b.config.DatabaseUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
 	repository.SetRepository(repo)
-
-	log.Println("Starting server on port", b.Config().Port)
 
 	e.Logger.Fatal(e.Start(b.config.Port))
 }
