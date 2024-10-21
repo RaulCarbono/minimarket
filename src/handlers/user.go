@@ -53,3 +53,35 @@ func GetUserHandler(s server.Server) echo.HandlerFunc {
 		return ctx.JSON(http.StatusOK, usersResponse)
 	}
 }
+
+func UpdateUserHandler(s server.Server) echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		userId, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		changes := new(model.User)
+		if err := ctx.Bind(changes); err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadRequest.Code,
+				Message: err.Error(),
+			}
+		}
+		err = repository.UpdateUser(ctx, userId, changes)
+
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		return ctx.JSON(http.StatusOK, &model.UpdateUsersResponse{
+			Message: "user successfully updated",
+		})
+	}
+}

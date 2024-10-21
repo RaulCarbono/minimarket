@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 
+	"github.com/go-playground/validator"
 	"github.com/go/mini_market/src/database"
+	"github.com/go/mini_market/src/model"
 	"github.com/go/mini_market/src/repository"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -54,6 +56,7 @@ func (b *Broker) Start(binder func(s Server, e *echo.Echo)) {
 	e := echo.New()
 	binder(b, e)
 
+	e.Validator = &model.CustomValidator{Validator: validator.New()}
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "metho=${method}, uri=${uri}, status=${status}\n",
 	}))

@@ -23,14 +23,15 @@ func GetCustomerByIdHandler(s server.Server) echo.HandlerFunc {
 			http.Error(ctx.Response().Writer, err.Error(), http.StatusBadRequest)
 			return err
 		}
-		customerByIdResponse := &model.CustomerByIdResponse{
+
+		return ctx.JSON(http.StatusOK, &model.CustomerByIdResponse{
 			Id:       int(customer.ID),
 			Name:     customer.Name,
 			LastName: customer.LastName,
 			Phone:    customer.Phone,
 			Email:    customer.User.Email,
 			Role:     customer.User.Role,
-		}
-		return ctx.JSON(http.StatusOK, customerByIdResponse)
+			Orders:   customer.Orders,
+		})
 	}
 }

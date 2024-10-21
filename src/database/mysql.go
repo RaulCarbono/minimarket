@@ -18,7 +18,7 @@ func DBConnection(DSN string) (*MysqlRepositori, error) {
 	if err != nil {
 		return nil, err
 	}
-	db.AutoMigrate(&model.Customer{}, &model.User{}, &model.Product{}, &model.Order{})
+	db.AutoMigrate(&model.Customer{}, &model.User{}, &model.Order{}, &model.Product{}, &model.OrderProduct{})
 	return &MysqlRepositori{db: db}, nil
 }
 
@@ -40,14 +40,14 @@ func (repo *MysqlRepositori) GetUsers(ctx echo.Context) ([]*model.User, error) {
 	return user, nil
 }
 
-func (repo *MysqlRepositori) GetCustomerById(ctx echo.Context, id int) (*model.Customer, error) {
-	var customer model.Customer
-	fmt.Println(id)
-	err := repo.db.Preload("User").Select("*").Where("id = ?", id).First(&customer).Error
-	if err != nil {
-		return nil, err
-	}
-	return &customer, nil
+func (repo *MysqlRepositori) InsertUser(ctx echo.Context, newUser *model.User) error {
+	result := repo.db.Create(&newUser)
+	return result.Error
+}
+
+func (repo *MysqlRepositori) UpdateUser(ctx echo.Context, userId int, changes interface{}) error {
+	result := repo.db.Model(&model.User{}).Where("ID = ?", userId).Updates(changes)
+	return result.Error
 }
 
 func (repo *MysqlRepositori) GetUserByEmail(ctx echo.Context, email string) (*model.User, error) {
@@ -59,13 +59,51 @@ func (repo *MysqlRepositori) GetUserByEmail(ctx echo.Context, email string) (*mo
 	return &user, nil
 }
 
-func (repo *MysqlRepositori) InsertUser(ctx echo.Context, newUser *model.User) error {
-	result := repo.db.Create(&newUser)
+func (repo *MysqlRepositori) InsertCustomer(ctx echo.Context, newCustomer *model.Customer) error {
+	result := repo.db.Create(&newCustomer)
 	return result.Error
 }
 
-func (repo *MysqlRepositori) InsertCustomer(ctx echo.Context, newCustomer *model.Customer) error {
-	result := repo.db.Create(&newCustomer)
+func (repo *MysqlRepositori) GetCustomerById(ctx echo.Context, id int) (*model.Customer, error) {
+	var customer model.Customer
+	fmt.Println(id)
+	err := repo.db.Preload("User").Preload("Orders").Preload("Orders.Product").Select("*").Where("id = ?", id).First(&customer).Error
+	if err != nil {
+		return nil, err
+	}
+	return &customer, nil
+}
+
+func (repo *MysqlRepositori) GetProductById(ctx echo.Context, id int) (*model.Product, error) {
+	var product model.Product
+	err := repo.db.Preload("Order").Select("*").Where("id = ?", id).First(&product).Error
+	if err != nil {
+		return nil, err
+	}
+	return &product, nil
+}
+
+func (repo *MysqlRepositori) GetProduct(ctx echo.Context) ([]*model.Product, error) {
+	var products []*model.Product
+	err := repo.db.Preload("Order").Select("*").Find(&products).Error
+	if err != nil {
+		return nil, err
+	}
+	return products, nil
+}
+
+func (repo *MysqlRepositori) InsertProduct(ctx echo.Context, newProduct *model.Product) error {
+	result := repo.db.Create(&newProduct)
+	return result.Error
+}
+
+func (repo *MysqlRepositori) InsertOrder(ctx echo.Context, newOrder *model.Order) error {
+	result := repo.db.Create(&newOrder)
+	return result.Error
+}
+
+func (repo *MysqlRepositori) AddItem(ctx echo.Context, newItem *model.OrderProduct) error {
+	result := repo.db.Create(&newItem)
 	return result.Error
 }
 

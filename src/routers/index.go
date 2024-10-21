@@ -12,4 +12,6 @@ func BindRoutes(s server.Server, e *echo.Echo) {
 	UserRouter(s, e)
 	CustomerRouter(s, e)
 	AuthenticateRouter(s, e)
+	ProductRouter(s, e)
+	OrderRouter(s, e)
 }
