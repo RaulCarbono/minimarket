@@ -11,4 +11,5 @@ func UserRouter(s server.Server, e *echo.Echo) {
 	userGroup.GET("/info/:id", handlers.GetUserByIdHandler(s))
 	userGroup.GET("/info", handlers.GetUserHandler(s))
 	userGroup.PUT("/:id", handlers.UpdateUserHandler(s))
+	userGroup.DELETE("/:id", handlers.DeleteUserHandler(s))
 }

@@ -11,6 +11,7 @@ type Repository interface {
 	GetUserByEmail(ctx echo.Context, email string) (*model.User, error)
 	InsertUser(ctx echo.Context, newUser *model.User) error
 	UpdateUser(ctx echo.Context, userId int, changes interface{}) error
+	DeleteUser(ctx echo.Context, userId int) error
 	InsertCustomer(ctx echo.Context, newCustomer *model.Customer) error
 	GetCustomerById(ctx echo.Context, id int) (*model.Customer, error)
 	GetProductById(ctx echo.Context, id int) (*model.Product, error)
@@ -45,6 +46,10 @@ func InsertUser(ctx echo.Context, newUser *model.User) error {
 
 func UpdateUser(ctx echo.Context, userId int, changes interface{}) error {
 	return implementation.UpdateUser(ctx, userId, changes)
+}
+
+func DeleteUser(ctx echo.Context, userId int) error {
+	return implementation.DeleteUser(ctx, userId)
 }
 
 func GetCustomerById(ctx echo.Context, id int) (*model.Customer, error) {

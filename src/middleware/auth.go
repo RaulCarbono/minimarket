@@ -36,6 +36,7 @@ func CheckAuthMiddleware(s server.Server) func(h echo.HandlerFunc) echo.HandlerF
 			_, err := jwt.ParseWithClaims(tokenString, &model.AppClaims{}, func(t *jwt.Token) (interface{}, error) {
 				return []byte(s.Config().JWTSecret), nil
 			})
+
 			if err != nil {
 				return echo.ErrUnauthorized
 			}

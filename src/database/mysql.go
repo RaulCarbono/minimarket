@@ -50,9 +50,14 @@ func (repo *MysqlRepositori) UpdateUser(ctx echo.Context, userId int, changes in
 	return result.Error
 }
 
+func (repo *MysqlRepositori) DeleteUser(ctx echo.Context, userId int) error {
+	result := repo.db.Where("ID = ?", userId).Delete(&model.User{})
+	return result.Error
+}
+
 func (repo *MysqlRepositori) GetUserByEmail(ctx echo.Context, email string) (*model.User, error) {
 	var user model.User
-	err := repo.db.Table("users").Select("id", "email", "password", "role").Where("email = ?", email).Scan(&user).Error
+	err := repo.db.Model(&model.User{}).Select("*").Where("email = ?", email).Scan(&user).Error
 	if err != nil {
 		return nil, err
 	}

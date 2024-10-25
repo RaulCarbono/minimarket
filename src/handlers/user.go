@@ -85,3 +85,44 @@ func UpdateUserHandler(s server.Server) echo.HandlerFunc {
 		})
 	}
 }
+
+func DeleteUserHandler(s server.Server) echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		userId, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		enabled := new(model.User)
+
+		if err := ctx.Validate(enabled); err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadRequest.Code,
+				Message: err.Error(),
+			}
+		}
+
+		if err := ctx.Bind(enabled); err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadRequest.Code,
+				Message: err.Error(),
+			}
+		}
+
+		err = repository.DeleteUser(ctx, userId)
+
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		return ctx.JSON(http.StatusOK, &model.UpdateUsersResponse{
+			Message: "user successfully updated",
+		})
+	}
+}
