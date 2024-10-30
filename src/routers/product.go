@@ -11,5 +11,5 @@ func ProductRouter(s server.Server, e *echo.Echo) {
 	productGroup.GET("/info/:id", handlers.GetProductByIdHandler(s))
 	productGroup.POST("", handlers.InsertProductHandler(s))
 	productGroup.GET("/info", handlers.GetProductdHandler(s))
-
+	productGroup.PUT("/:id", handlers.UpdateProductHandler(s))
 }

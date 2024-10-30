@@ -27,7 +27,7 @@ type (
 		Role     string `json:"role"`
 	}
 
-	UpdateUsersResponse struct {
+	UpdateResponse struct {
 		Message string `json:"message"`
 	}
 
@@ -94,6 +94,13 @@ type (
 		Description string  `json:"description" validate:"required"`
 		Price       float64 `json:"price" validate:"required"`
 		Image       string  `json:"image" validate:"required"`
+	}
+
+	UpdateProductRequest struct {
+		Name        string  `json:"name"`
+		Description string  `json:"description"`
+		Price       float64 `json:"price"`
+		Image       string  `json:"image"`
 	}
 
 	OrderRequest struct {

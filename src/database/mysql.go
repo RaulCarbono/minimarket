@@ -102,6 +102,12 @@ func (repo *MysqlRepositori) InsertProduct(ctx echo.Context, newProduct *model.P
 	return result.Error
 }
 
+func (repo *MysqlRepositori) UpdateProduct(ctx echo.Context, productId int, changes interface{}) error {
+	result := repo.db.Model(&model.Product{}).Where("ID = ?", productId).Updates(changes)
+	fmt.Println(result)
+	return result.Error
+}
+
 func (repo *MysqlRepositori) InsertOrder(ctx echo.Context, newOrder *model.Order) error {
 	result := repo.db.Create(&newOrder)
 	return result.Error
