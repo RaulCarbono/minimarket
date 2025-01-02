@@ -68,7 +68,7 @@ func SignUpHandler(s server.Server) echo.HandlerFunc {
 
 func LoginHandler(s server.Server) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		var validate = validator.New()
+
 		var request = model.LoginRequest{}
 		err := json.NewDecoder(ctx.Request().Body).Decode(&request)
 
@@ -76,7 +76,7 @@ func LoginHandler(s server.Server) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
 		}
 
-		if err := validate.Struct(request); err != nil {
+		if err := ctx.Validate(request); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, ErrValidateStruct)
 		}
 
@@ -84,9 +84,11 @@ func LoginHandler(s server.Server) echo.HandlerFunc {
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
+
 		if user == nil {
 			return echo.NewHTTPError(http.StatusUnauthorized, "invalid credentials")
 		}
+
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password)); err != nil {
 			return echo.NewHTTPError(http.StatusUnauthorized, "invalid credentials")
 		}
