@@ -31,3 +31,57 @@ func GetUserByIdHandler(s server.Server) echo.HandlerFunc {
 		return ctx.JSON(http.StatusOK, userByIdResponse)
 	}
 }
+
+func GetUserHandler(s server.Server) echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		rows, err := repository.GetUsers(ctx)
+		if err != nil {
+			http.Error(ctx.Response().Writer, err.Error(), http.StatusBadRequest)
+			return err
+		}
+		var usersResponse []*model.UsersResponse
+
+		for _, user := range rows {
+			usersResponse = append(usersResponse, &model.UsersResponse{
+				Id:       user.ID,
+				Email:    user.Email,
+				Password: user.Password,
+				Role:     user.Role,
+			})
+
+		}
+		return ctx.JSON(http.StatusOK, usersResponse)
+	}
+}
+
+func UpdateUserHandler(s server.Server) echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		userId, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		changes := new(model.User)
+		if err := ctx.Bind(changes); err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadRequest.Code,
+				Message: err.Error(),
+			}
+		}
+		err = repository.UpdateUser(ctx, userId, changes)
+
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		return ctx.JSON(http.StatusOK, &model.UpdateUsersResponse{
+			Message: "user successfully updated",
+		})
+	}
+}

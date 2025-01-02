@@ -6,6 +6,9 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func UserRouter(s server.Server, r *echo.Router) {
-	r.Add("GET", "/user/info/:id", handlers.GetUserByIdHandler(s))
+func UserRouter(s server.Server, e *echo.Echo) {
+	userGroup := e.Group("/user")
+	userGroup.GET("/info/:id", handlers.GetUserByIdHandler(s))
+	userGroup.GET("/info", handlers.GetUserHandler(s))
+	userGroup.PUT("/:id", handlers.UpdateUserHandler(s))
 }

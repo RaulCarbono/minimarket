@@ -10,6 +10,7 @@ import (
 type EnvConfig struct {
 	Port        string
 	DatabaseUrl string
+	JWTSecret   string
 }
 
 func GetVariablesEnv() *EnvConfig {
@@ -20,5 +21,6 @@ func GetVariablesEnv() *EnvConfig {
 	return &EnvConfig{
 		Port:        os.Getenv("PORT"),
 		DatabaseUrl: os.Getenv("DATABASEURL"),
+		JWTSecret:   os.Getenv("JWTSECRET"),
 	}
 }
