@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -74,6 +75,49 @@ func InsertProductHandler(s server.Server) echo.HandlerFunc {
 			Description: product.Description,
 			Price:       product.Price,
 			Image:       product.Image,
+		})
+	}
+}
+
+func UpdateProductHandler(s server.Server) echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		productId, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		fmt.Println(ctx.Request().Body)
+		var productRequest = model.UpdateProductRequest{}
+		err = json.NewDecoder(ctx.Request().Body).Decode(&productRequest)
+
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadRequest.Code,
+				Message: err.Error(),
+			}
+		}
+
+		product := model.Product{
+			Name:        productRequest.Name,
+			Description: productRequest.Description,
+			Price:       productRequest.Price,
+			Image:       productRequest.Image,
+		}
+
+		err = repository.UpdateProduct(ctx, productId, product)
+
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		return ctx.JSON(http.StatusOK, &model.UpdateResponse{
+			Message: "Product successfully updated",
 		})
 	}
 }

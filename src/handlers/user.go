@@ -80,7 +80,7 @@ func UpdateUserHandler(s server.Server) echo.HandlerFunc {
 			}
 		}
 
-		return ctx.JSON(http.StatusOK, &model.UpdateUsersResponse{
+		return ctx.JSON(http.StatusOK, &model.UpdateResponse{
 			Message: "user successfully updated",
 		})
 	}
@@ -121,8 +121,8 @@ func DeleteUserHandler(s server.Server) echo.HandlerFunc {
 			}
 		}
 
-		return ctx.JSON(http.StatusOK, &model.UpdateUsersResponse{
-			Message: "user successfully updated",
+		return ctx.JSON(http.StatusOK, &model.UpdateResponse{
+			Message: "user successfully Delete",
 		})
 	}
 }

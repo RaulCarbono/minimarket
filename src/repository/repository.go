@@ -17,6 +17,7 @@ type Repository interface {
 	GetProductById(ctx echo.Context, id int) (*model.Product, error)
 	GetProduct(ctx echo.Context) ([]*model.Product, error)
 	InsertProduct(ctx echo.Context, newProduct *model.Product) error
+	UpdateProduct(ctx echo.Context, productId int, changes interface{}) error
 	InsertOrder(ctx echo.Context, newOrder *model.Order) error
 	AddItem(ctx echo.Context, newItem *model.OrderProduct) error
 	Close() error
@@ -70,6 +71,10 @@ func GetProduct(ctx echo.Context) ([]*model.Product, error) {
 
 func InsertProduct(ctx echo.Context, newProduct *model.Product) error {
 	return implementation.InsertProduct(ctx, newProduct)
+}
+
+func UpdateProduct(ctx echo.Context, productId int, changes interface{}) error {
+	return implementation.UpdateProduct(ctx, productId, changes)
 }
 
 func InsertOrder(ctx echo.Context, newOrder *model.Order) error {
