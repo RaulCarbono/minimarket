@@ -54,6 +54,14 @@ type (
 		Producto *ProductResponse
 	}
 
+	UpdateProductResponse struct {
+		Message string `json:"message"`
+	}
+
+	DeleteProductResponse struct {
+		Message string `json:"message"`
+	}
+
 	LoginResponse struct {
 		Token string `json:"token"`
 	}

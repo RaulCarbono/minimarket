@@ -97,6 +97,16 @@ func (repo *MysqlRepositori) InsertProduct(ctx echo.Context, newProduct *model.P
 	return result.Error
 }
 
+func (repo *MysqlRepositori) UpdateProduct(ctx echo.Context, productId int, changes interface{}) error {
+	result := repo.db.Model(&model.Product{}).Where("ID = ?", productId).Updates(changes)
+	return result.Error
+}
+
+func (repo *MysqlRepositori) DeleteProduct(ctx echo.Context, productId int) error {
+	result := repo.db.Model(&model.Product{}).Where("ID = ?", productId).Delete(&model.Product{})
+	return result.Error
+}
+
 func (repo *MysqlRepositori) InsertOrder(ctx echo.Context, newOrder *model.Order) error {
 	result := repo.db.Create(&newOrder)
 	return result.Error

@@ -77,3 +77,60 @@ func InsertProductHandler(s server.Server) echo.HandlerFunc {
 		})
 	}
 }
+
+func UpdateProductHandler(s server.Server) echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		productId, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		changes := new(model.Product)
+		if err := ctx.Bind(changes); err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadRequest.Code,
+				Message: err.Error(),
+			}
+		}
+		err = repository.UpdateProduct(ctx, productId, changes)
+
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		return ctx.JSON(http.StatusOK, &model.UpdateProductResponse{
+			Message: "Product successfully updated",
+		})
+	}
+}
+
+func DeleteProductHandler(s server.Server) echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		productId, err := strconv.Atoi(ctx.Param("id"))
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		err = repository.DeleteProduct(ctx, productId)
+
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    echo.ErrBadGateway.Code,
+				Message: err,
+			}
+		}
+
+		return ctx.JSON(http.StatusOK, &model.DeleteProductResponse{
+			Message: "Product successfully disposed of ",
+		})
+	}
+}
